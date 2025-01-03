@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "ootd-back"
+version = "0.1.0"
+description = "OOTD Back-end"
+authors = ["tejava317 <frogjj@kaist.ac.kr>"]
+readme = "README.md"
+repository = "https://github.com/tejava317/ootd-back"
+license = "MIT"
+
+packages = [
+    { include = "app" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+fastapi = "^0.115.6"
+uvicorn = "^0.34.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
