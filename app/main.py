@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from app.api.v1 import weather, auth
+from app.db.session import get_db
+from sqlalchemy.orm import Session
 
 app = FastAPI(
     title="OOTD Backend API",
@@ -11,5 +13,5 @@ app.include_router(weather.router, prefix="/api/v1/weather", tags=["Weather"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 
 @app.get("/")
-async def root():
+async def root(db: Session = Depends(get_db)):
     return {"message": "Welcome to OOTD Backend API"}
