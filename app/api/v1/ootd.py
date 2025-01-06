@@ -36,70 +36,42 @@ s3_service = S3Service(
 def generate_presigned_url(request: PresignedUrlRequest):
     try:
         response = s3_service.generate_presigned_url(request.file_name, request.file_type)
-        return response
+        return {
+            "presigned_url": response["presignedUrl"],
+            "file_url": response["fileUrl"]
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/save-ootd", response_model=SaveOOTDResponse)
 def save_ootd(request: SaveOOTDRequest, db: Session = Depends(get_db)):
     try:
-        # Update weather table
         weather = db.query(Weather).filter(
             Weather.date == request.date,
             Weather.location == request.location
         ).first()
-
         if not weather:
-            weather = Weather(
-                date=request.date,
-                location=request.location
-            )
+            weather = Weather(date=request.date, location=request.location)
             db.add(weather)
             db.commit()
             db.refresh(weather)
 
-        # Update weather_info table
-        weather_info = db.query(WeatherInfo).filter(
-            Weather.weather_id == weather.weather_id
-        ).first()
-
-        if not weather_info:
-            weather_info = WeatherInfo(
-                weather_id=weather.weather_id,
-                actual_temp=request.actual_temp,
-                apparent_temp=request.apparent_temp,
-                precipitation=request.precipitation,
-                humidity=request.humidity,
-                wind_speed=request.wind_speed,
-                temp_6am=request.temp_6am,
-                temp_12pm=request.temp_12pm,
-                temp_6pm=request.temp_6pm,
-                temp_12am=request.temp_12am
-            )
-            db.add(weather_info)
-            db.commit()
-            db.refresh(weather_info)
-        
-        # Update ootd table
         ootd = db.query(OOTD).filter(
-            OOTD.user_ud == request.user_id,
+            OOTD.user_id == request.user_id,
             OOTD.weather_id == weather.weather_id
         ).first()
-
         if ootd:
-            ootd.photo_url = request.photo_url
-            db.commit()
-            db.refresh(ootd)
+            ootd.photo_url = str(request.photo_url)
         else:
             ootd = OOTD(
                 user_id=request.user_id,
                 weather_id=weather.weather_id,
-                photo_url=request.photo_url,
+                photo_url=str(request.photo_url),
                 satisfaction_score=None
             )
             db.add(ootd)
-            db.commit()
-            db.refresh(ootd)
+        db.commit()
+        db.refresh(ootd)
 
         return SaveOOTDResponse(
             message="OOTD successfully saved.",
@@ -112,8 +84,11 @@ def save_ootd(request: SaveOOTDRequest, db: Session = Depends(get_db)):
 @router.put("/update-satisfaction")
 def update_satisfaction(request: UpdateSatisfactionRequest, db: Session = Depends(get_db)):
     try:
-        # Search ootd data
-        ootd = db.query(OOTD).filter(OOTD.ootd_id == request.ootd_id).first()
+        ootd = db.query(OOTD).join(Weather).filter(
+            OOTD.user_id == request.user_id,
+            Weather.date == request.date,
+            Weather.location == request.location
+        ).first()
 
         if not ootd:
             raise HTTPException(status_code=404, detail="OOTD record not found")

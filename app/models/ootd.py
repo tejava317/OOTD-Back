@@ -8,7 +8,7 @@ class OOTD(Base):
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     weather_id = Column(Integer, ForeignKey("weather.weather_id"), nullable=False)
     photo_url = Column(String, nullable=False)
-    satisfaction_score = Column(Integer, nullable=True)
+    satisfaction_score = Column(Integer, nullable=True, default=None)
 
     __table_args__ = (
         CheckConstraint(
