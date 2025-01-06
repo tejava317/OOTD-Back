@@ -6,7 +6,6 @@ from app.core.config import settings
 AWS_ACCESS_KEY = settings.AWS_ACCESS_KEY
 AWS_SECRET_KEY = settings.AWS_SECRET_KEY
 AWS_REGION = settings.AWS_REGION
-
 BUCKET_NAME = settings.S3_BUCKET_NAME
 
 s3_service = S3Service(
