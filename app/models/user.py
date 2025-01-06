@@ -5,5 +5,6 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(Integer, primary_key=True, index=True)
-    google_id = Column(String, unique=True, index=True)
+    kakao_id = Column(Integer, unique=True, index=True, nullable=False)
     nickname = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=True)

@@ -6,8 +6,13 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY: str
     AWS_SECRET_KEY: str
     AWS_REGION: str
-    
     S3_BUCKET_NAME: str
+
+    KAKAO_AUTH_URL = "https://kauth.kakao.com"
+    KAKAO_API_URL = "https://kapi.kakao.com"
+    KAKAO_CLIENT_ID: str
+    KAKAO_CLIENT_SECRET: str
+    KAKAO_REDIRECT_URI: str
 
     class Config:
         env_file = ".env"
