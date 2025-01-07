@@ -8,7 +8,9 @@ from app.schemas.ootd import (
     PresignedUrlResponse,
     SaveOOTDRequest,
     SaveOOTDResponse,
-    UpdateSatisfactionRequest
+    UpdateSatisfactionRequest,
+    GetOOTDRequest,
+    GetOOTDResponse
 )
 from app.models.weather import Weather
 from app.models.weather_info import WeatherInfo
@@ -102,7 +104,7 @@ def save_ootd(request: SaveOOTDRequest, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to save OOTD: {str(e)}")
 
-@router.post("/update-satisfaction")
+@router.put("/update-satisfaction")
 def update_satisfaction(request: UpdateSatisfactionRequest, db: Session = Depends(get_db)):
     try:
         ootd = db.query(OOTD).join(Weather).filter(
@@ -110,7 +112,6 @@ def update_satisfaction(request: UpdateSatisfactionRequest, db: Session = Depend
             Weather.date == request.date,
             Weather.location == request.location
         ).first()
-
         if not ootd:
             raise HTTPException(status_code=404, detail="OOTD record not found")
 
@@ -122,4 +123,23 @@ def update_satisfaction(request: UpdateSatisfactionRequest, db: Session = Depend
         return {"message": "Satisfaction score updated successfully"}
     except Exception as e:
         db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to update satisfaction score: {str(e)}")
+
+@router.get("/get-ootd-info", response_model=GetOOTDResponse)
+def get_ootd_photo(request: GetOOTDRequest, db: Session = Depends(get_db)):
+    try:
+        ootd = db.query(OOTD).join(Weather).filter(
+            OOTD.kakao_id == request.kakao_id,
+            Weather.date == request.date,
+            Weather.location == request.location
+        ).first()
+        if not ootd:
+            raise HTTPException(status_code=404, detail="OOTD record not found")
+        
+        return GetOOTDResponse(
+            message="OOTD photo successfully returned.",
+            photo_url=ootd.photo_url,
+            satisfaction_score=ootd.satisfaction_score
+        )
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to update satisfaction score: {str(e)}")

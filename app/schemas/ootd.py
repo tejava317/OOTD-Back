@@ -34,3 +34,13 @@ class UpdateSatisfactionRequest(BaseModel):
     date: str
     location: str
     satisfaction_score: int
+
+class GetOOTDRequest(BaseModel):
+    kakao_id: int
+    date: str
+    location: str
+
+class GetOOTDResponse(BaseModel):
+    message: str
+    photo_url: HttpUrl
+    satisfaction_score: int
