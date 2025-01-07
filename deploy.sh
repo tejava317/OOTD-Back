@@ -26,4 +26,8 @@ gcloud run deploy $SERVICE_NAME \
     --image gcr.io/$PROJECT_ID/$IMAGE_NAME \
     --platform managed \
     --region $REGION \
-    --allow-unauthenticated
+    --allow-unauthenticated\
+    --set-env-vars PORT=8080 \
+    --memory=512Mi \
+    --cpu=1 \
+    --timeout=600s

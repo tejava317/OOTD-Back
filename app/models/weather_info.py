@@ -10,6 +10,7 @@ class WeatherInfo(Base):
     precipitation = Column(Float, nullable=False)
     humidity = Column(Integer, nullable=False)
     wind_speed = Column(Float, nullable=False)
+    condition = Column(str, nullable=False)
     temp_6am = Column(Float, nullable=False)
     temp_12pm = Column(Float, nullable=False)
     temp_6pm = Column(Float, nullable=False)

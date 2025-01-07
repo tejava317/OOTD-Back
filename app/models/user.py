@@ -4,7 +4,6 @@ from app.db.session import Base
 class User(Base):
     __tablename__ = "users"
 
-    user_id = Column(Integer, primary_key=True, index=True)
-    kakao_id = Column(Integer, unique=True, index=True, nullable=False)
+    kakao_id = Column(Integer, primary_key=True, index=True, nullable=False)
     nickname = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=True)
+    profile_image = Column(String, unique=True, nullable=True)
