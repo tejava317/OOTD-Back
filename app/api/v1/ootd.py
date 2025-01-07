@@ -102,7 +102,7 @@ def save_ootd(request: SaveOOTDRequest, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to save OOTD: {str(e)}")
 
-@router.put("/update-satisfaction")
+@router.post("/update-satisfaction")
 def update_satisfaction(request: UpdateSatisfactionRequest, db: Session = Depends(get_db)):
     try:
         ootd = db.query(OOTD).join(Weather).filter(

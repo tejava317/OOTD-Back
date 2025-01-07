@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl, Field
+from pydantic import BaseModel, HttpUrl
 from datetime import date
 
 class PresignedUrlRequest(BaseModel):
@@ -33,4 +33,4 @@ class UpdateSatisfactionRequest(BaseModel):
     kakao_id: int
     date: str
     location: str
-    satisfaction_score: int = Field(..., ge=1, le=5)
+    satisfaction_score: int
