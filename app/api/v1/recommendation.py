@@ -15,8 +15,8 @@ gemini = Gemini(GEMINI_API_KEY)
 @router.post("/generate-recommendation", response_model=RecommendationResponse)
 async def generate_recommendation(request: RecommendationRequest):
     try:
-        prompt = ""
+        prompt = "Hello"
         response = gemini.get_response(prompt)
-        return response
+        return RecommendationResponse(message=response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
