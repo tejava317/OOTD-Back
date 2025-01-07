@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 import logging
-from app.models.user import User
+from app.models.user_info import UserInfo
 from app.schemas.user import KakaoUserInfo
 from app.db.session import get_db
 
@@ -14,13 +14,13 @@ async def save_kakao_user_info(user_info: KakaoUserInfo, db: Session = Depends(g
     try:
         logger.info(f"Received Kakao ID: {user_info.kakao_id}")
 
-        existing_user = db.query(User).filter(
-            User.kakao_id == user_info.kakao_id
+        existing_user = db.query(UserInfo).filter(
+            UserInfo.kakao_id == user_info.kakao_id
         ).first()
         if existing_user:
             return {"message": "Existing user information verified successfully"}
 
-        new_user = User(
+        new_user = UserInfo(
             kakao_id = user_info.kakao_id,
             nickname=user_info.nickname,
             profile_image=user_info.profile_image

@@ -4,6 +4,6 @@ from app.db.session import Base
 class Weather(Base):
     __tablename__ = "weather"
     
-    weather_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    location = Column(String(255), nullable=False)
+    weather_id = Column(Integer, primary_key=True, autoincrement=True)
     date = Column(Date, nullable=False)
+    location = Column(String(60), nullable=False)

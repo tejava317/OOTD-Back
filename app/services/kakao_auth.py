@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from app.core.config import settings
 from app.schemas.user import KakaoUserInfo
 from app.db.session import SessionLocal
-from app.models.user import User
+from app.models.user_info import UserInfo
 
 def get_kakao_access_token(auth_code: str) -> str:
     url = f"{settings.KAKAO_AUTH_URL}/oauth/token"
@@ -37,9 +37,9 @@ def get_kakao_user_info(access_token: str) -> KakaoUserInfo:
 
 def save_or_get_user(user_info: KakaoUserInfo):
     db = SessionLocal()
-    user = db.query(User).filter(User.kakao_id == user_info.kakao_id).first()
+    user = db.query(UserInfo).filter(UserInfo.kakao_id == user_info.kakao_id).first()
     if not user:
-        user = User(
+        user = UserInfo(
             kakao_id=user_info.kakao_id,
             nickname=user_info.nickname,
             email=user_info.email,
