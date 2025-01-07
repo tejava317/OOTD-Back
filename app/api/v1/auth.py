@@ -1,19 +1,35 @@
-from fastapi import APIRouter, HTTPException, Query
-from app.services.kakao_auth import get_kakao_access_token, get_kakao_user_info, save_or_get_user
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
+import logging
+from app.models.user_info import UserInfo
 from app.schemas.user import KakaoUserInfo
+from app.db.session import get_db
 
 router = APIRouter()
 
-@router.get("/oauth/kakao/callback", response_model=KakaoUserInfo)
-async def kakao_login_callback(code: str = Query(...)):
+logger = logging.getLogger("kakao_user_logger")
+
+@router.post("/save-user-info")
+async def save_kakao_user_info(user_info: KakaoUserInfo, db: Session = Depends(get_db)):
     try:
-        access_token = get_kakao_access_token(code)
-        user_info = get_kakao_user_info(access_token)
-        user = save_or_get_user(user_info)
-        return KakaoUserInfo(
-            kakao_id=user.kakao_id,
-            nickname=user.nickname,
-            email=user.email,
+        logger.info(f"Received Kakao ID: {user_info.kakao_id}")
+
+        existing_user = db.query(UserInfo).filter(
+            UserInfo.kakao_id == user_info.kakao_id
+        ).first()
+        if existing_user:
+            return {"message": "Existing user information verified successfully"}
+
+        new_user = UserInfo(
+            kakao_id = user_info.kakao_id,
+            nickname=user_info.nickname,
+            profile_image=user_info.profile_image
         )
+        print()
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return {"message": "New user information saved successfully"}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to verify user information: {str(e)}")
