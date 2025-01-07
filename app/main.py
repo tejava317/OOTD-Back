@@ -2,7 +2,7 @@
 # Main application of FastAPI
 
 from fastapi import FastAPI, Depends
-from app.api.v1 import auth, ootd
+from app.api.v1 import auth, ootd, recommendation
 from app.db.session import get_db
 from sqlalchemy.orm import Session
 
@@ -16,6 +16,7 @@ app = FastAPI(
 # Register the router (Process requests using handler function)
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(ootd.router, prefix="/api/v1/ootd", tags=["OOTD"])
+app.include_router(recommendation.router, prefix="/api/v1/recommendation", tags=["Recommendation"])
 
 # Root endpoint (Return welcome message)
 @app.get("/")
