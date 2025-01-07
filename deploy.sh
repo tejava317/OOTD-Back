@@ -5,7 +5,8 @@ IMAGE_NAME="ootd-fastapi-app"
 SERVICE_NAME="ootd-app"
 REGION="asia-northeast3"
 
-# Create new builder and activate it
+# Re-create new builder and activate it
+docker buildx rm multiarch
 docker-buildx create --name multiarch --use
 docker buildx inspect --bootstrap
 
@@ -22,8 +23,9 @@ docker buildx build \
 # docker push gcr.io/$PROJECT_ID/$IMAGE_NAME
 
 # Deploy Cloud Run
-gcloud run deploy $SERVICE_NAME \
-    --image gcr.io/$PROJECT_ID/$IMAGE_NAME \
-    --platform managed \
-    --region $REGION \
-    --allow-unauthenticated
+gcloud run deploy ootd-app \
+  --image gcr.io/fluted-sentry-447013-j5/ootd-fastapi-app \
+  --platform managed \
+  --region asia-northeast3 \
+  --allow-unauthenticated \
+  --add-cloudsql-instances=fluted-sentry-447013-j5:asia-northeast3:ootd-instance
