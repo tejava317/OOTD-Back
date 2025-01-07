@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     KAKAO_CLIENT_SECRET: str
     KAKAO_REDIRECT_URI: str
 
+    GEMINI_API_KEY: str
+
     class Config:
         env_file = ".env"
 
