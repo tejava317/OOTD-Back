@@ -1,5 +1,5 @@
 from pydantic import BaseModel, HttpUrl
-from datetime import date
+from typing import List
 
 class PresignedUrlRequest(BaseModel):
     file_name: str
@@ -35,12 +35,15 @@ class UpdateSatisfactionRequest(BaseModel):
     location: str
     satisfaction_score: int
 
-class GetOOTDRequest(BaseModel):
-    kakao_id: int
-    date: str
-    location: str
-
 class GetOOTDResponse(BaseModel):
     message: str
     photo_url: HttpUrl
     satisfaction_score: int
+
+class OOTDInfo(BaseModel):
+    photo_url: HttpUrl
+    satisfaction_score: int
+
+class GetSimilarOOTDResponse(BaseModel):
+    message: str
+    ootd_list: List[OOTDInfo]
