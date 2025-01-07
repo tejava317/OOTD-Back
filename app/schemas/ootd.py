@@ -10,14 +10,15 @@ class PresignedUrlResponse(BaseModel):
     file_url: HttpUrl
 
 class SaveOOTDRequest(BaseModel):
-    user_id: int
-    date: date
+    kakao_id: int
+    date: str
     location: str
     actual_temp: float
     apparent_temp: float
     precipitation: float
     humidity: int
     wind_speed: float
+    condition: str
     temp_6am: float
     temp_12pm: float
     temp_6pm: float
@@ -29,7 +30,7 @@ class SaveOOTDResponse(BaseModel):
     ootd_id: int
 
 class UpdateSatisfactionRequest(BaseModel):
-    user_id: int
-    date: date
+    kakao_id: int
+    date: str
     location: str
     satisfaction_score: int = Field(..., ge=1, le=5)

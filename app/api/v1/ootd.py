@@ -55,16 +55,37 @@ def save_ootd(request: SaveOOTDRequest, db: Session = Depends(get_db)):
             db.add(weather)
             db.commit()
             db.refresh(weather)
+        
+        weather_info = db.query(WeatherInfo).filter(
+            WeatherInfo.weather_id == weather.weather_id
+        ).first()
+        if not weather_info:
+            weather_info = WeatherInfo(
+                weather_id=weather.weather_id,
+                actual_temp=request.actual_temp,
+                apparent_temp=request.apparent_temp,
+                precipitation=request.precipitation,
+                humidity=request.precipitation,
+                wind_speed=request.wind_speed,
+                condition=request.condition,
+                temp_6am=request.temp_6am,
+                temp_12pm=request.temp_12pm,
+                temp_6pm=request.temp_6pm,
+                temp_12am=request.temp_12am
+            )
+            db.add(weather_info)
+            db.commit()
+            db.refresh(weather_info)
 
         ootd = db.query(OOTD).filter(
-            OOTD.user_id == request.user_id,
+            OOTD.kakao_id == request.kakao_id,
             OOTD.weather_id == weather.weather_id
         ).first()
         if ootd:
             ootd.photo_url = str(request.photo_url)
         else:
             ootd = OOTD(
-                user_id=request.user_id,
+                kakao_id=request.kakao_id,
                 weather_id=weather.weather_id,
                 photo_url=str(request.photo_url),
                 satisfaction_score=None
@@ -85,7 +106,7 @@ def save_ootd(request: SaveOOTDRequest, db: Session = Depends(get_db)):
 def update_satisfaction(request: UpdateSatisfactionRequest, db: Session = Depends(get_db)):
     try:
         ootd = db.query(OOTD).join(Weather).filter(
-            OOTD.user_id == request.user_id,
+            OOTD.kakao_id == request.kakao_id,
             Weather.date == request.date,
             Weather.location == request.location
         ).first()

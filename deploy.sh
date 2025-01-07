@@ -6,7 +6,7 @@ SERVICE_NAME="ootd-app"
 REGION="asia-northeast3"
 
 # Re-create new builder and activate it
-docker buildx rm multiarch
+# docker buildx rm multiarch
 docker-buildx create --name multiarch --use
 docker buildx inspect --bootstrap
 
