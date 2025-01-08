@@ -47,3 +47,7 @@ class OOTDInfo(BaseModel):
 class GetSimilarOOTDResponse(BaseModel):
     message: str
     ootd_list: List[OOTDInfo]
+
+class GetAllOOTDResponse(BaseModel):
+    message: str
+    photo_list: List[HttpUrl]

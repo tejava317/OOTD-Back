@@ -30,3 +30,4 @@ uvicorn==0.34.0
 pydantic-settings
 sqlalchemy
 psycopg2
+google-generativeai
