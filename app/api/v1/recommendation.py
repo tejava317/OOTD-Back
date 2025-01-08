@@ -43,7 +43,7 @@ async def generate_recommendation(request: RecommendationRequest):
         )
         response = gemini.get_response(prompt)
         
-        response.replace('```json', '').replace('```', '').strip()
+        response = response.replace('```json', '').replace('```', '').strip()
         parsed_response = json.loads(response)
         
         return RecommendationResponse(

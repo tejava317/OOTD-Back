@@ -14,16 +14,16 @@ if __name__ == "__main__":
     GEMINI_API_KEY = settings.GEMINI_API_KEY
     gemini = Gemini(gemini_api_key=GEMINI_API_KEY)
 
-    actual_temp = 20
-    apparent_temp = 20
-    precipitation = 0
-    humidity = 0
-    wind_speed = 0
-    condition = "Sunny"
-    temp_6am = 20
-    temp_12pm = 20
-    temp_6pm = 20
-    temp_12am = 20
+    actual_temp = -1.63
+    apparent_temp = -1.63
+    precipitation = 0.0
+    humidity = 88
+    wind_speed = 0.53
+    condition = "overcast clouds"
+    temp_6am = 0
+    temp_12pm = 0
+    temp_6pm = 0
+    temp_12am = 0
 
     prompt = (
         "Recommend an outfit based on the following weather information.\n"
