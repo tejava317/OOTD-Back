@@ -3,6 +3,7 @@
 
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
+from pydantic import HttpUrl
 from typing import List
 from app.schemas.ootd import (
     PresignedUrlRequest,
@@ -12,7 +13,8 @@ from app.schemas.ootd import (
     UpdateSatisfactionRequest,
     GetOOTDResponse,
     OOTDInfo,
-    GetSimilarOOTDResponse
+    GetSimilarOOTDResponse,
+    GetAllOOTDResponse
 )
 from app.models.weather import Weather
 from app.models.weather_info import WeatherInfo
@@ -184,3 +186,23 @@ def get_similar_ootd(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get similar OOTD information: {str(e)}")
+
+@router.get("/get-all-ootds", response_model=GetAllOOTDResponse)
+def get_all_ootds(
+    kakao_id: int = Query(...),
+    db: Session = Depends(get_db)
+):
+    try:
+        user_ootds = (
+            db.query(OOTD)
+            .filter(OOTD.kakao_id == kakao_id)
+            .order_by(OOTD.ootd_id.desc())
+            .all()
+        )
+        photo_list: List[HttpUrl] = [row.photo_url for row in user_ootds]
+        return GetAllOOTDResponse(
+            message="All OOTDs successfully returned.",
+            photo_list=photo_list
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get all OOTD information: {str(e)}")
