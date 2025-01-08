@@ -154,6 +154,7 @@ def get_ootd_photo(
 @router.get("/get-similar-ootd", response_model=GetSimilarOOTDResponse)
 def get_similar_ootd(
     kakao_id: int = Query(...),
+    date: str = Query(...),
     apparent_temp: float = Query(...),
     db: Session = Depends(get_db)
 ):
@@ -166,6 +167,7 @@ def get_similar_ootd(
             .join(Weather, OOTD.weather_id == Weather.weather_id)
             .join(WeatherInfo, Weather.weather_id == WeatherInfo.weather_id)
             .filter(OOTD.kakao_id == kakao_id,
+                    Weather.date != date,
                     WeatherInfo.apparent_temp >= lower_bound,
                     WeatherInfo.apparent_temp <= upper_bound)
             .all()
