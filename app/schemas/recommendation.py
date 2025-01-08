@@ -14,3 +14,7 @@ class RecommendationRequest(BaseModel):
 
 class RecommendationResponse(BaseModel):
     message: str
+    outer: str
+    top: str
+    bottom: str
+    shoes: str
